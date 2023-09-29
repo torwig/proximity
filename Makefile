@@ -27,3 +27,8 @@ lint:
 .PHONY: build
 build:
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o $(BINARY_NAME) cmd/$(BINARY_NAME)/main.go
+
+## build: builds the application/service for Windows, x64
+.PHONY: build_win
+build_win:
+	CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -o $(BINARY_NAME).exe cmd/$(BINARY_NAME)/main.go
