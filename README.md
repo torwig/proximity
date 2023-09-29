@@ -10,8 +10,16 @@ make build
 
 ## Run
 
+From the command line:
+
 ```bash
 ./proxx
+```
+
+Via `Docker`:
+
+```bash
+docker run -it torwig/proxx:0.0.1 
 ```
 
 ## Limits
