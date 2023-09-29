@@ -27,7 +27,7 @@ func TestGame_OpenCell(t *testing.T) {
 		NumRows:          3,
 		NumCols:          3,
 		NumBlackHoles:    2,
-		BlackHoleLocator: newPredefinedBlackHoleLocator([]board.Position{{1, 2}, {2, 2}}),
+		BlackHoleLocator: newPredefinedBlackHoleLocator([]board.Position{{Row: 1, Col: 2}, {Row: 2, Col: 2}}),
 	}
 
 	t.Run("Open a cell outside the board", func(t *testing.T) {
