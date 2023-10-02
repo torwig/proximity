@@ -1,7 +1,6 @@
 package board
 
 import (
-	"container/list"
 	"fmt"
 )
 
@@ -105,10 +104,10 @@ func (b *Board) height() int {
 
 func (b *Board) numberOfAdjacentBlackHoles(i int, j int) int {
 	var n int
-	positions := b.getSurroundingCellPositions(i, j)
+	positions := b.GetSurroundingCellPositions(i, j)
 
 	for _, p := range positions {
-		if c := b.CellAt(p.row, p.col); c.IsBlackHole() {
+		if c := b.CellAt(p.Row, p.Col); c.IsBlackHole() {
 			n++
 		}
 	}
@@ -127,46 +126,8 @@ func (b *Board) OpenAllBlackHoles() {
 	}
 }
 
-// MakeCellAndSurroundingCellsOpened marks the specified cell and surrounding cells with clues opened.
-// The effect is also applied to all the surrounding blank cells.
-func (b *Board) MakeCellAndSurroundingCellsOpened(i, j int) {
-	queue := list.New()
-	queue.PushBack(cellPos{row: i, col: j})
-
-	for queue.Len() > 0 {
-		el := queue.Front()
-		pos := el.Value.(cellPos)
-
-		queue.Remove(el)
-		c := b.CellAt(pos.row, pos.col)
-		c.MarkAsOpen()
-
-		if c.IsBlank() {
-			positions := b.getSurroundingCellPositions(pos.row, pos.col)
-
-			for _, p := range positions {
-				c = b.CellAt(p.row, p.col)
-
-				if c.IsOpen() {
-					continue
-				}
-
-				if c.IsBlank() {
-					queue.PushBack(cellPos{row: p.row, col: p.col})
-				} else {
-					c.MarkAsOpen()
-				}
-			}
-		}
-	}
-}
-
-type cellPos struct {
-	row, col int
-}
-
-func (b *Board) getSurroundingCellPositions(i, j int) []cellPos {
-	neighborPositions := []cellPos{
+func (b *Board) GetSurroundingCellPositions(i, j int) []Position {
+	neighborPositions := []Position{
 		{i - 1, j - 1},
 		{i - 1, j},
 		{i - 1, j + 1},
@@ -180,7 +141,7 @@ func (b *Board) getSurroundingCellPositions(i, j int) []cellPos {
 	result := neighborPositions[:0]
 
 	for _, pos := range neighborPositions {
-		if b.ValidCellPosition(pos.row, pos.col) {
+		if b.ValidCellPosition(pos.Row, pos.Col) {
 			result = append(result, pos)
 		}
 	}

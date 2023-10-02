@@ -1,6 +1,7 @@
 package game
 
 import (
+	"container/list"
 	"errors"
 	"fmt"
 	"proxx/internal/proxx/board"
@@ -87,12 +88,46 @@ func (g *Game) OpenCell(row int, col int) error {
 	}
 
 	if cell.IsBlank() {
-		g.board.MakeCellAndSurroundingCellsOpened(row, col)
+		g.makeCellAndSurroundingCellsOpened(row, col)
 	}
 
 	g.isWon = g.board.OpenedCells() == g.maxOpenCells()
 
 	return nil
+}
+
+// makeCellAndSurroundingCellsOpened marks the specified cell and surrounding cells with clues opened.
+// The effect is also applied to all the surrounding blank cells.
+func (g *Game) makeCellAndSurroundingCellsOpened(row int, col int) {
+	queue := list.New()
+	queue.PushBack(board.Position{Row: row, Col: col})
+
+	for queue.Len() > 0 {
+		el := queue.Front()
+		pos := el.Value.(board.Position)
+
+		queue.Remove(el)
+		c := g.board.CellAt(pos.Row, pos.Col)
+		c.MarkAsOpen()
+
+		if c.IsBlank() {
+			positions := g.board.GetSurroundingCellPositions(pos.Row, pos.Col)
+
+			for _, p := range positions {
+				c = g.board.CellAt(p.Row, p.Col)
+
+				if c.IsOpen() {
+					continue
+				}
+
+				if c.IsBlank() {
+					queue.PushBack(p)
+				} else {
+					c.MarkAsOpen()
+				}
+			}
+		}
+	}
 }
 
 func (g *Game) maxOpenCells() int {
